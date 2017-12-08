@@ -8,7 +8,7 @@ docker build -t tutorial ./docker/
 
 to open a notebook from the image:
 
-docker run -it --rm  -v $HOME/:/home/jovyan -p 8888:8888 tutorial
+docker run -it --rm -p 8888:8888 tutorial
 
 (-v  set up a volume that links the ~/myhome:~/dokerhome )
 
