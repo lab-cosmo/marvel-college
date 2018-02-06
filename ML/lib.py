@@ -1,6 +1,10 @@
 import ipywidgets
 import nglview as nv
+import ase
 
+def view(sdict):
+    ase_str=ase.Atoms(symbols=sdict['species'], positions=sdict['positions'], cell=sdict['cell'])
+    return ase_view(ase_str)
 def ase_view(s):
     view=nv.show_ase(s, gui=True)
     view.clear_representations()
