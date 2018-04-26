@@ -59,7 +59,7 @@ def andersen_thermostat(velocities,temperature,freq,dt):
     return velocities
 
 
-def MD_NVT_simulator_rapide(positions,velocities,mass,temperature,r_m,epsilon,k_spring,Nstep,dt,enregistrement_stride=10):
+def simulateur_NVT_efficace(positions,velocities,mass,temperature,r_m,epsilon,k_spring,Nstep,dt,enregistrement_stride=10):
     from tqdm import tqdm_notebook as tqdm_cs
     Nparticule, _ = positions.shape
     accelerations = np.zeros(positions.shape)
