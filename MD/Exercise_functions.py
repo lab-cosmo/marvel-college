@@ -1,5 +1,5 @@
 import numpy as np
-
+from tqdm import tqdm_notebook as tqdm_cs
 
 
 def get_LJ_forces(positions,r_m,epsilon):
@@ -60,7 +60,7 @@ def andersen_thermostat(velocities,temperature,freq,dt):
 
 
 def simulateur_NVT_efficace(positions,velocities,mass,temperature,r_m,epsilon,k_spring,Nstep,dt,enregistrement_stride=10):
-    from tqdm import tqdm_notebook as tqdm_cs
+    
     Nparticule, _ = positions.shape
     accelerations = np.zeros(positions.shape)
     pos = []
@@ -72,12 +72,13 @@ def simulateur_NVT_efficace(positions,velocities,mass,temperature,r_m,epsilon,k_
                       E_system=np.zeros((Nrecord,)),E_potentiel=np.zeros((Nrecord,)),
                      E_cinetique=np.zeros((Nrecord,)),time=np.zeros((Nrecord,)))
     dt_half = 0.5*dt
-    th_en = 0.5*mass*np.power(velocities,2).sum()
+    #th_en = 0.5*mass*np.power(velocities,2).sum()
     sys_en = 0
     econs = 0.0
     # Calculates the initial potential energy
     forces,ljpot,sppot = get_forces(positions,r_m,epsilon,k_spring)
-    sys_en += ljpot + sppot + th_en
+    Ekin_tot = 0.5*mass*np.power(velocities,2).sum()
+    sys_en += ljpot + sppot + Ekin_tot
     econs += sys_en 
     ii = 0
     for it in tqdm_cs(range(Nstep)):
@@ -85,8 +86,8 @@ def simulateur_NVT_efficace(positions,velocities,mass,temperature,r_m,epsilon,k_
         #Apply thermostat
         econs += 0.5*mass*np.power(velocities,2).sum()
         velocities = andersen_thermostat(velocities,temperature,thermostat_frequency,dt)
-        CoM = np.average(velocities,weights=masses,axis=0).reshape((1,3))
-        velocities = velocities - CoM
+        #CoM = np.average(velocities,weights=masses,axis=0).reshape((1,3))
+        #velocities = velocities - CoM
         econs -= 0.5*mass*np.power(velocities,2).sum()
         
         # half update of velocities
