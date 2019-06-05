@@ -18,3 +18,23 @@ RUN jupyter nbextension enable keyboard_shortcut_editor/main
 RUN jupyter nbextension enable codefolding/edit
 RUN jupyter nbextension enable latex_envs/latex_envs
 RUN jupyter nbextension enable equation-numbering/main
+
+USER root
+
+RUN sudo apt-get update && \
+    sudo apt-get install -y --no-install-recommends nodejs && \
+    sudo apt-get install -y --no-install-recommends npm && \
+    rm -rf /var/lib/apt/lists/*
+
+USER $NB_UID
+
+RUN cd /home/$NB_USER && \
+    git clone https://github.com/osscar-org/widget-code-input.git && \
+    cd widget-code-input && \
+    pip install -e . && \
+    jupyter nbextension install --py --symlink --sys-prefix widget_code_input && \
+    jupyter nbextension enable --py --sys-prefix widget_code_input
+
+RUN conda install --channel conda-forge appmode -y
+
+RUN pip install tabulate
