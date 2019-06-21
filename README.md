@@ -8,9 +8,9 @@ docker build -t tutorial ./docker/
 
 to open a notebook from the image:
 
-docker run -it --rm -p 8888:8888 tutorial
+docker run -it --rm -p 8888:8888 -v /local/git/marvel-college/MD/:/home/jovyan/notebooks/ tutorial
 
-(-v  set up a volume that links the ~/myhome:~/dokerhome )
+/local/git/marvel-college/MD/ should be changed to the path where the notebooks are located.
 
 ## Notebooks
 
