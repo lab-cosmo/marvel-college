@@ -6,3 +6,4 @@ None0000000.png
 *.ipython
 *.local
 *.config
+*.jupyter
