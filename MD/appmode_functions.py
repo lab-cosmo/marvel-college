@@ -56,7 +56,7 @@ def check_user_value(code_widget, check_function_output, reference_func, test_va
             try:
                 user_value = user_function(**input_dict)
                 try:
-                    error = abs(user_value - correct_value)
+                    error = np.abs(user_value - correct_value)
                 except Exception:
                     type_warning = True
                     error = 1. # Large value so it triggers a failed test
