@@ -37,6 +37,8 @@ def get_recompute(setup_class):
 
 def check_user_value(code_widget, check_function_output, reference_func, test_values_dict):
     import itertools
+    import numpy as np
+    
     # I don't catch exceptions so that the users can see the traceback
     error_string = "YOUR FUNCTION DOES NOT SEEM RIGHT, PLEASE TRY TO FIX IT"
     ok_string = "YOUR FUNCTION SEEMS TO BE CORRECT!! CONGRATULATIONS!"
@@ -49,14 +51,17 @@ def check_user_value(code_widget, check_function_output, reference_func, test_va
     with check_function_output:
         user_function = code_widget.get_function_object() 
 
-             
+        failed_tests = []
         for test_vals in itertools.product(*test_values_dict.values()):
             input_dict = {k:v for k,v in zip(test_values_dict.keys(),test_vals)}
+            np.random.seed(10)
             correct_value = reference_func(**input_dict)
+            # error = np.abs(user_value - correct_value).max()
             try:
+                np.random.seed(10)
                 user_value = user_function(**input_dict)
                 try:
-                    error = abs(user_value - correct_value)
+                    error = np.abs(user_value - correct_value).max()
                 except Exception:
                     type_warning = True
                     error = 1. # Large value so it triggers a failed test
@@ -64,14 +69,16 @@ def check_user_value(code_widget, check_function_output, reference_func, test_va
                 last_exception = exc
                 test_table.append(list(test_vals)+[correct_value, "ERROR", False])
             else:
-                if error > 1.e-8:
+                if error > 1.e-6:
                     test_table.append(list(test_vals)+[str(correct_value), str(user_value), False])
+                    failed_tests.append(test_table[-1])
                 else:
                     test_table.append(list(test_vals)+[str(correct_value), str(user_value), True])
 
         num_tests = len(test_table)
-        num_passed_tests = len([test for test in test_table if test[5]])
-        failed_tests = [test[:-1] for test in test_table if not test[5]] # Keep only failed tests, and remove last column
+        num_passed_tests = num_tests - len(failed_tests)
+
+        
         MAX_FAILED_TESTS = 5
         if num_passed_tests < num_tests:
             html_table = HTML("<style>tbody tr:nth-child(odd) { background-color: #e2f7ff; } th { background-color: #94cae0; min-width: 100px; } td { font-family: monospace; } td, th { padding-right: 3px; padding-left: 3px; } </style>" + 
