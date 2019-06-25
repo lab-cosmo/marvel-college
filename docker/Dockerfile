@@ -53,4 +53,4 @@ COPY ./notebooks/ $HOME/notebooks/
 USER root
 # Launch Notebook server
 EXPOSE 8888
-CMD ["jupyter-notebook","--ip=127.0.0.1", "--allow-root", "--no-browser", "--NotebookApp.token=''"]
+CMD ["jupyter-notebook","--ip=0.0.0.0", "--allow-root", "--no-browser", "--NotebookApp.token=''"]

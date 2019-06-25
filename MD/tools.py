@@ -49,13 +49,18 @@ def faire_une_chaine_lineaire(N,r_m):
 
 
 def manipulation_hist():
+    the_figure, the_plot = plt.subplots(figsize=(5,5))
+    the_plot.set_xlabel("vitesse [l/t]")
+    the_plot.set_ylabel("Nombre de particules")
+
     def f(temperature):
-        plt.figure(2)
+        the_plot.axes.clear()
         velocities = np.zeros((500,1))
         velocities = np.random.normal(loc=0.0, scale=np.sqrt(temperature),size=velocities.shape)
-        plt.hist(velocities);
-        plt.xlim(-10,10)
-        plt.show()
+        the_plot.hist(velocities);
+        the_plot.set_xlim(-10,10)
+        the_figure.canvas.draw()
+        the_figure.canvas.flush_events()
     return interactive(f, temperature=FloatSlider(min=0.1, max=7, step=0.3,description=r'\(T\)',value=1))
 
 def manipulation_LJ_force(potentiel,force):

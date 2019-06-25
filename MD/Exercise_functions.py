@@ -1,6 +1,13 @@
 import numpy as np
 from tqdm import tqdm_notebook as tqdm_cs
 
+def Force_LennardJones(d,r_m,epsilon):
+    ### Retourne la valeur de la force harmonique
+    return  12  * epsilon * ( (r_m/d)**12 - (r_m/d)**6 ) / d
+
+def Force_Harmonique(d,r_m,k):
+    ### Retourne la norme de la force harmonique
+    return  - 2*k * (d - r_m)
 
 def get_LJ_forces(positions,r_m,epsilon):
     Npart,_ = positions.shape
@@ -48,6 +55,11 @@ def get_forces(positions,r_m,epsilon,k_spring):
     H_forces,H_pot = get_Harm_forces(positions,r_m,k_spring)
     return LJ_forces+H_forces,LJ_pot,H_pot
 
+def calcule_forces(positions,r_m,epsilon,k_spring):
+    LJ_forces,LJ_pot = get_LJ_forces(positions,r_m,epsilon)
+    H_forces,H_pot = get_Harm_forces(positions,r_m,k_spring)
+    return LJ_forces+H_forces
+
 def andersen_thermostat(velocities,temperature,freq,dt):
     if temperature > 0:
         vshape = velocities.shape
@@ -59,8 +71,8 @@ def andersen_thermostat(velocities,temperature,freq,dt):
     return velocities
 
 
-def simulateur_NVT_efficace(positions,velocities,mass,temperature,r_m,epsilon,k_spring,Nstep,dt,enregistrement_stride=10):
-    
+def simulateur_NVT_efficace(positions,velocities,masse,temperature,r_m,epsilon,k_spring,Nstep,dt,enregistrement_stride=10):
+    mass = masse
     Nparticule, _ = positions.shape
     accelerations = np.zeros(positions.shape)
     pos = []
